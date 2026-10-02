@@ -1,0 +1,215 @@
+{
+  "status": "RETROSPECTIVE_DESCRIPTIVE",
+  "population": "P-FROZEN",
+  "train_chains": 593,
+  "train_residues": 86419,
+  "test_chains": 197,
+  "test_residues": 26289,
+  "base_recovery": 0.4652135874320058,
+  "numpy": "2.4.6",
+  "sklearn": "1.5.2",
+  "python": "3.11.7",
+  "bootstrap": {
+    "n": 10000,
+    "seed": 271,
+    "unit": "paired chain; micro residue ratios"
+  },
+  "historical_recreation_passed": true,
+  "rows": [
+    {
+      "name": "target_k2_s200",
+      "n_classes": 2,
+      "train_lookup_accuracy": 0.1666300234902047,
+      "test_lookup_accuracy": {
+        "estimate": 0.16177869070713988,
+        "ci": [
+          0.15681860753623095,
+          0.16679160602117712
+        ]
+      },
+      "rescued_argmax_fraction": {
+        "estimate": 0.06291604853741109,
+        "ci": [
+          0.05935305551010504,
+          0.06673472570841885
+        ]
+      },
+      "channel_correct_given_backbone_wrong": {
+        "estimate": 0.11764705882352941,
+        "ci": [
+          0.11217023462023788,
+          0.12328323305215912
+        ]
+      },
+      "lift": 1.3135859849014278,
+      "either_argmax_correct": 0.5281296359694169,
+      "fusion_gain_pp": 11.537144813420063,
+      "lambda": 0.5
+    },
+    {
+      "name": "target_k2_s201",
+      "n_classes": 2,
+      "train_lookup_accuracy": 0.17125863525382148,
+      "test_lookup_accuracy": {
+        "estimate": 0.16619118262391114,
+        "ci": [
+          0.15947121173487305,
+          0.17294365665105518
+        ]
+      },
+      "rescued_argmax_fraction": {
+        "estimate": 0.06850774088021606,
+        "ci": [
+          0.06440788293929874,
+          0.07281330306691736
+        ]
+      },
+      "channel_correct_given_backbone_wrong": {
+        "estimate": 0.1281029945230813,
+        "ci": [
+          0.12160973047730195,
+          0.13469280165365102
+        ]
+      },
+      "lift": 1.2634573437661127,
+      "either_argmax_correct": 0.5337213283122219,
+      "fusion_gain_pp": 12.545170984061771,
+      "lambda": 0.5
+    },
+    {
+      "name": "target_k2_s202",
+      "n_classes": 2,
+      "train_lookup_accuracy": 0.17125863525382148,
+      "test_lookup_accuracy": {
+        "estimate": 0.16619118262391114,
+        "ci": [
+          0.15947121173487305,
+          0.17294365665105518
+        ]
+      },
+      "rescued_argmax_fraction": {
+        "estimate": 0.06850774088021606,
+        "ci": [
+          0.06440788293929874,
+          0.07281330306691736
+        ]
+      },
+      "channel_correct_given_backbone_wrong": {
+        "estimate": 0.1281029945230813,
+        "ci": [
+          0.12160973047730195,
+          0.13469280165365102
+        ]
+      },
+      "lift": 1.2634573437661127,
+      "either_argmax_correct": 0.5337213283122219,
+      "fusion_gain_pp": 11.677888090075694,
+      "lambda": 0.5
+    },
+    {
+      "name": "backbone_k2",
+      "n_classes": 2,
+      "train_lookup_accuracy": 0.11272983950288709,
+      "test_lookup_accuracy": {
+        "estimate": 0.10825820685457796,
+        "ci": [
+          0.10335840224079812,
+          0.11324041550578294
+        ]
+      },
+      "rescued_argmax_fraction": {
+        "estimate": 0.045950777891893946,
+        "ci": [
+          0.04304173901480895,
+          0.04892749303285855
+        ]
+      },
+      "channel_correct_given_backbone_wrong": {
+        "estimate": 0.08592360765346042,
+        "ci": [
+          0.08099841463201567,
+          0.09095493149074112
+        ]
+      },
+      "lift": 1.2371621113019435,
+      "either_argmax_correct": 0.5111643653238997,
+      "fusion_gain_pp": 0.0,
+      "lambda": 0.0
+    },
+    {
+      "name": "backbone_k16",
+      "n_classes": 16,
+      "train_lookup_accuracy": 0.16998576701882687,
+      "test_lookup_accuracy": {
+        "estimate": 0.16455551751683214,
+        "ci": [
+          0.15934855803608478,
+          0.1696115689130715
+        ]
+      },
+      "rescued_argmax_fraction": {
+        "estimate": 0.04385864810376964,
+        "ci": [
+          0.041369492694642775,
+          0.04651344583658903
+        ]
+      },
+      "channel_correct_given_backbone_wrong": {
+        "estimate": 0.08201152286791379,
+        "ci": [
+          0.07765803864671693,
+          0.08640146454314047
+        ]
+      },
+      "lift": 1.5766350111081748,
+      "either_argmax_correct": 0.5090722355357754,
+      "fusion_gain_pp": 0.0,
+      "lambda": 0.0
+    }
+  ],
+  "rescued_fraction_contrasts": {
+    "target_k2_s200 minus backbone_k2": {
+      "estimate": 0.016965270645517137,
+      "ci": [
+        0.013008371172592837,
+        0.021059674281559998
+      ]
+    },
+    "target_k2_s200 minus backbone_k16": {
+      "estimate": 0.019057400433641448,
+      "ci": [
+        0.015394624282790616,
+        0.022862021772769057
+      ]
+    },
+    "target_k2_s201 minus backbone_k2": {
+      "estimate": 0.02255696298832211,
+      "ci": [
+        0.018349566180897565,
+        0.026831584759159338
+      ]
+    },
+    "target_k2_s201 minus backbone_k16": {
+      "estimate": 0.024649092776446422,
+      "ci": [
+        0.020275085947997176,
+        0.02916835561110747
+      ]
+    },
+    "target_k2_s202 minus backbone_k2": {
+      "estimate": 0.02255696298832211,
+      "ci": [
+        0.018349566180897565,
+        0.026831584759159338
+      ]
+    },
+    "target_k2_s202 minus backbone_k16": {
+      "estimate": 0.024649092776446422,
+      "ci": [
+        0.020275085947997176,
+        0.02916835561110747
+      ]
+    }
+  },
+  "limitations": "Not conditional information estimates, new detector, or independent validation. Lambda fitted on training accuracy; the train lookup accuracy is not a population Bayes bound."
+}

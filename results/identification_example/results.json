@@ -1,0 +1,93 @@
+{
+  "population": "exact uniform three-state construction",
+  "rows": [
+    {
+      "channel": "valid",
+      "states": [
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ]
+      ],
+      "histogram": {
+        "1": 1,
+        "0": 2
+      },
+      "cardinality": 2,
+      "standalone_accuracy": "2/3",
+      "joint_accuracy": "2/3",
+      "conditional_mi_bits": 0.0,
+      "changed_of_nine": 0
+    },
+    {
+      "channel": "redundant_target",
+      "states": [
+        [
+          0,
+          1,
+          1
+        ],
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          0
+        ]
+      ],
+      "histogram": {
+        "1": 1,
+        "0": 2
+      },
+      "cardinality": 2,
+      "standalone_accuracy": "2/3",
+      "joint_accuracy": "2/3",
+      "conditional_mi_bits": 0.0,
+      "changed_of_nine": 4
+    },
+    {
+      "channel": "complementary_target",
+      "states": [
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          0,
+          1
+        ],
+        [
+          2,
+          0,
+          0
+        ]
+      ],
+      "histogram": {
+        "0": 2,
+        "1": 1
+      },
+      "cardinality": 2,
+      "standalone_accuracy": "2/3",
+      "joint_accuracy": "1",
+      "conditional_mi_bits": 0.6666666666666665,
+      "changed_of_nine": 4
+    }
+  ],
+  "checks_passed": 4
+}
