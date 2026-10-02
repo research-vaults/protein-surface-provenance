@@ -11,19 +11,17 @@ coefficient on the training population, and evaluates the held-out contrast.
     the recorded values.
 
 By default, generated data and the external checkout live under `.cache/` next
-to this script. Set `SURFACE_PROVENANCE_CACHE` to use another cache directory.
-The full run takes approximately 15--25 minutes on CPU.
+to this script. Set `SURFACE_PROVENANCE_CACHE` or pass `--cache-dir` to use
+another cache directory. The full run takes approximately 15--25 minutes on
+CPU.
 
     python3 reproduction/reproduce_frozen_contrast.py
     python3 reproduction/reproduce_frozen_contrast.py --smoke-test
 """
 import os, sys, json, hashlib, subprocess, urllib.request, argparse
-import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-CACHE = os.environ.get("SURFACE_PROVENANCE_CACHE", os.path.join(HERE, ".cache"))
-WORK = os.path.join(CACHE, "external")
-DATA = os.path.join(CACHE, "data")
+CACHE = WORK = DATA = None
 PROTEINMPNN_COMMIT = "8907e6671bfbfc92303b5f79c4b5e6ce47cdef57"
 PROTEINMPNN_WEIGHT_SHA256 = "c9cb4a671d79604111231f8dbfc7c590e06f1197453b7a6854ac6661a642f5bd"
 ALPHA = "ACDEFGHIKLMNPQRSTVWY"; AAI = {a: i for i, a in enumerate(ALPHA)}
@@ -35,6 +33,21 @@ EXPECT = {"chain_set.jsonl": "1944d21b975a11543b1b92fe906a0bb4a9a276a52ca3d493e5
 # Values reported in the paper.
 TARGETS = {"base_pmpnn": 46.07, "contrast_cath_pmpnn": 12.49, "backbone_gain": 0.00}
 ok = fail = 0
+
+
+def configure_cache(explicit=None):
+    """Resolve cache paths, with CLI taking precedence over the environment."""
+    global CACHE, WORK, DATA
+    root = explicit or os.environ.get(
+        "SURFACE_PROVENANCE_CACHE", os.path.join(HERE, ".cache")
+    )
+    CACHE = os.path.abspath(os.path.expanduser(root))
+    WORK = os.path.join(CACHE, "external")
+    DATA = os.path.join(CACHE, "data")
+    return {"cache_dir": CACHE, "data_dir": DATA, "external_dir": WORK}
+
+
+configure_cache()
 
 
 def chk(label, got, want, tol):
@@ -139,11 +152,26 @@ def stack_eval(Gtr, ytr, ctr, Gte, yte, cte, nc):
 
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument(
+        "--cache-dir",
+        help="cache root; overrides SURFACE_PROVENANCE_CACHE",
+    )
+    ap.add_argument(
+        "--show-paths",
+        action="store_true",
+        help="print resolved paths without creating directories or downloading data",
+    )
     ap.add_argument("--chains", type=int, default=0,
                     help="limit held-out chains; 0 uses the full population")
     ap.add_argument("--smoke-test", action="store_true",
                     help="run four training and two test chains; checks execution, not paper values")
     a = ap.parse_args()
+    paths = configure_cache(a.cache_dir)
+    if a.show_paths:
+        print(json.dumps(paths, sort_keys=True))
+        return
+    global np
+    import numpy as np
     print("FROZEN-MODEL PROVENANCE CONTRAST\n")
     if not ensure_data(): sys.exit(1)
     repo = ensure_pmpnn()

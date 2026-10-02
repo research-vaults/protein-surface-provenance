@@ -27,6 +27,17 @@ EXPECTED = {
 BASE_URL = "https://people.csail.mit.edu/ingraham/graph-protein-design/data/cath/"
 
 
+def resolve_data_dir(explicit=None):
+    """Resolve capacity data, with CLI taking precedence over the shared cache."""
+    if explicit:
+        return os.path.abspath(os.path.expanduser(explicit))
+    cache = os.environ.get(
+        "SURFACE_PROVENANCE_CACHE",
+        os.path.join(os.path.dirname(__file__), ".cache"),
+    )
+    return os.path.join(os.path.abspath(os.path.expanduser(cache)), "data")
+
+
 def ensure_data(directory):
     os.makedirs(directory, exist_ok=True)
     for name, expected in EXPECTED.items():
@@ -48,15 +59,28 @@ def ensure_data(directory):
 
 def main():
     parser = argparse.ArgumentParser()
-    default = os.path.join(os.path.dirname(__file__), ".cache", "data")
-    parser.add_argument("--data-dir", default=default)
+    parser.add_argument(
+        "--data-dir",
+        help=(
+            "capacity-data directory; overrides SURFACE_PROVENANCE_CACHE/data"
+        ),
+    )
+    parser.add_argument(
+        "--show-paths",
+        action="store_true",
+        help="print resolved paths without creating directories or downloading data",
+    )
     args = parser.parse_args()
-    ensure_data(args.data_dir)
+    data_dir = resolve_data_dir(args.data_dir)
+    if args.show_paths:
+        print(json.dumps({"data_dir": data_dir}, sort_keys=True))
+        return
+    ensure_data(data_dir)
 
-    split = json.load(open(os.path.join(args.data_dir, "chain_set_splits.json")))
+    split = json.load(open(os.path.join(data_dir, "chain_set_splits.json")))
     test = set(split["test"])
     counts = collections.Counter()
-    with open(os.path.join(args.data_dir, "chain_set.jsonl")) as handle:
+    with open(os.path.join(data_dir, "chain_set.jsonl")) as handle:
         for line in handle:
             row = json.loads(line)
             if row["name"] in test and len(row["seq"]) <= 500:

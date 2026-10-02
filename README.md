@@ -1,73 +1,59 @@
 # Protein-surface provenance diagnostics
 
-Public reproducibility release for **“What Does a Protein Surface Add? Ablations Cannot Tell You.”**
+Code and evidence for **“What Does a Protein Surface Add? Ablations Cannot
+Tell You.”** The paper shows that an ordinary surface-versus-no-surface
+ablation conflates four questions: how the channel was constructed, whether
+fixed model weights use it, whether it adds conditional information beyond the
+backbone, and whether it helps a specified finite learner.
 
-The paper separates four questions that a surface-versus-no-surface ablation
-combines: how a channel was constructed, whether fixed model weights use it,
-whether it adds conditional information beyond the backbone, and whether it
-helps a specified finite learner. This repository provides the lightweight
-source-provenance diagnostic, synthetic examples, aggregate result records,
-and self-fetching reproduction scripts that can be distributed safely.
+**Paper:** [ICBINB-BIO workshop submission, 29 August
+2026](paper/what-does-a-protein-surface-add-icbinb-bio-2026.pdf)  
+**Code artifact:** 2 October 2026; BSD-3-Clause for project-authored code and
+documentation.
+
+The linked PDF is the exact submitted workshop version (SHA-256
+`93b0c6624df2a5672c831447cfda0e0c1c32b8ea8c166bd481f69ec04277b08b`).
+It is distinct from later internal research revisions. This public repository
+is a research artifact, not an anonymous reviewer snapshot.
+
+## Quick start
+
+The safe first check uses only Python 3.8+ and the standard library. It makes
+no network calls and normally finishes in seconds.
+
+```bash
+shasum -a 256 -c MANIFEST.sha256
+python3 tests/test_provenance_probe.py
+python3 tests/test_cache_paths.py
+python3 results/identification_example/run.py
+```
+
+Expected output ends with `ALL 27 TESTS PASSED`, `ALL 9 CACHE-PATH TESTS
+PASSED`, and a three-state example in which standalone accuracy is equal but
+joint accuracy and conditional information differ. The manifest check covers
+every released payload except the manifest itself.
 
 ## What is included
 
 - `provenance_probe.py`: dependency-free command-line audit for controlled
   label substitution and an explicitly non-identifying observational screen.
-- `examples/`: synthetic target-dependent and design-valid fixtures. These
-  contain no protein sequences, structures, personal data, or third-party
-  model outputs.
-- `tests/`: 27 offline assertions covering the documented CLI and failure
-  modes.
-- `scripts/`: templates for constructing fixed-coordinate interventions and
-  backbone-derived controls from inputs supplied by the user.
-- `reproduction/`: scripts that fetch and verify public inputs at runtime for
-  the channel-capacity and frozen-model contrasts.
-- `results/`: protocols and aggregate outputs for the exact identification
-  example, complementarity analysis, and counterfactual-specificity analysis.
-- `PROTOCOL.md`, `CHECKLIST.md`, and `REPORT_TEMPLATE.md`: reporting guidance.
+- `examples/`: synthetic target-dependent and design-valid fixtures.
+- `tests/`: offline CLI, failure-mode, and cache-path tests.
+- `scripts/`: templates for fixed-coordinate interventions and
+  backbone-derived controls using inputs supplied by the user.
+- `reproduction/`: self-fetching scripts for the optional channel-capacity and
+  frozen-model contrasts.
+- `results/`: protocols and aggregate outputs for the exact identification,
+  complementarity, and counterfactual-specificity analyses.
+- `PROTOCOL.md`, `CHECKLIST.md`, and `REPORT_TEMPLATE.md`: reusable guidance
+  for specifying, auditing, and reporting derived-input diagnostics.
 
-## Deliberately excluded
-
-The public release does not contain author identities or affiliations, internal
-reviews, planning journals, roadmaps, acceptance correspondence, private data,
-machine-specific paths, checkpoints, third-party repositories, venue-specific
-drafts, or raw SurfPro/SurfDesign-derived fixtures and model-output arrays.
-SurfPro and SurfDesign did not expose a detected repository licence when this
-release was prepared, so their source, weights, data, and derived raw outputs
-are not redistributed here. See `THIRD_PARTY_NOTICES.md` and
+Raw SurfPro/SurfDesign-derived arrays, checkpoints, and upstream repositories
+are not redistributed because their repository licences did not clearly
+authorize that release. See `THIRD_PARTY_NOTICES.md` and
 `REPRODUCTION_LIMITS.md`.
 
-The manuscript is also deliberately omitted. The code release is public and
-linked to the paper title; it is **not** an anonymous conference-review
-artifact. Authoritative conference and archival manuscripts remain separate.
-
-## Requirements
-
-The diagnostic and tests require Python 3.8+ and the standard library only.
-Optional reproduction scripts use the packages pinned in `requirements.txt`.
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-python3 -m pip install --upgrade pip
-python3 -m pip install -r requirements.txt  # optional, for full reproductions
-```
-
-## Quick verification
-
-From the repository root:
-
-```bash
-shasum -a 256 -c MANIFEST.sha256
-python3 tests/test_provenance_probe.py
-python3 results/identification_example/run.py
-```
-
-Expected: every manifest entry is `OK`, all 27 assertions pass, and the exact
-three-state example reports equal standalone accuracy but different joint
-accuracy and conditional information.
-
-## Minimal examples
+## Minimal diagnostic examples
 
 Target-dependent construction under a labels-only intervention:
 
@@ -86,8 +72,8 @@ python3 provenance_probe.py intervene \
 ```
 
 The first reports `TARGET_DEPENDENCE_DETECTED`; the second reports
-`NO_DEPENDENCE_DETECTED`, which is intentionally not a certificate that every
-possible substitution would leave the channel unchanged.
+`NO_DEPENDENCE_DETECTED`. The latter is intentionally not a certificate that
+every possible substitution would leave the channel unchanged.
 
 The observational screen is triage only:
 
@@ -100,25 +86,62 @@ python3 provenance_probe.py screen \
 It reports association and a train-fitted lookup score but issues no provenance
 verdict.
 
-## Reproducing larger quantities
+## Result-to-command map
 
-Channel-only capacity:
+| Paper/evidence role | Command | What it establishes |
+|---|---|---|
+| Controlled provenance logic | `python3 tests/test_provenance_probe.py` | 27 synthetic assertions for intervention semantics and failure handling |
+| Cache contract | `python3 tests/test_cache_paths.py` | Default, environment, and explicit-CLI path precedence without downloads |
+| Finite identification example | `python3 results/identification_example/run.py` | Exact counterexample separating standalone from joint information |
+| Hydropathy-channel capacity | `python3 reproduction/reproduce_channel_capacity.py` | Recomputes three held-out capacity quantities from public CATH data |
+| Frozen-model contrast | `python3 reproduction/reproduce_frozen_contrast.py --smoke-test` | Small execution check; not the paper result |
+| Full frozen-model contrast | `python3 reproduction/reproduce_frozen_contrast.py` | Recomputes the held-out ProteinMPNN contrast and bootstrap interval |
+
+The complementarity and counterfactual-specificity directories contain
+aggregate records and protocols, not redistributable raw arrays.
+
+## Optional large reproductions
+
+Install the optional dependencies in a virtual environment:
 
 ```bash
+python3 -m venv .venv
+source .venv/bin/activate
+python3 -m pip install --upgrade pip
+python3 -m pip install -r requirements.txt
+```
+
+Both reproduction scripts use a shared cache root. By default it is
+`reproduction/.cache/`. Set `SURFACE_PROVENANCE_CACHE` to move it:
+
+```bash
+export SURFACE_PROVENANCE_CACHE=/path/with/adequate/space
 python3 reproduction/reproduce_channel_capacity.py
+python3 reproduction/reproduce_frozen_contrast.py --smoke-test
 ```
 
-Frozen ProteinMPNN contrast:
+The capacity script also accepts `--data-dir /path/to/data`, which overrides
+`SURFACE_PROVENANCE_CACHE/data` for that command. The frozen-contrast script
+accepts `--cache-dir /path/to/cache`, which overrides the environment variable.
+Inspect resolution without creating directories or downloading anything:
 
 ```bash
-python3 reproduction/reproduce_frozen_contrast.py --smoke-test
-python3 reproduction/reproduce_frozen_contrast.py
+python3 reproduction/reproduce_channel_capacity.py --show-paths
+python3 reproduction/reproduce_frozen_contrast.py --show-paths
 ```
 
-These commands download public inputs into an ignored cache, verify pinned
-hashes or commits, and do not require files from the private research archive.
-Set `SURFACE_PROVENANCE_CACHE=/path/to/cache` to choose the cache location.
-Users remain responsible for the upstream data and model terms.
+Resource expectations:
+
+| Command | Download/cache | Compute and status |
+|---|---|---|
+| Channel capacity | CATH JSONL plus split file, about 494 MiB total | Standard library; streaming CPU calculation. Full fresh replay: **NOT_RUN** for this release because the release host lacked disk space. |
+| Frozen contrast, smoke | Same CATH data plus a pinned ProteinMPNN checkout and weights, roughly 180 MiB more | CPU; 4 training and 2 test chains; checks execution only. **NOT_RUN** for this release. |
+| Frozen contrast, full | Reuses the same cache | Approximately 15–25 minutes on CPU in the original workflow; hardware-dependent. **NOT_RUN** for this release. |
+
+Allow at least 1 GiB free for the downloaded cache, plus separate space for the
+Python environment. Peak memory was not benchmarked for this release. Downloads
+are checksum-verified and written through temporary files so an interrupted
+transfer does not become a trusted input.
 
 ## Inputs and outputs
 
@@ -129,19 +152,35 @@ Users remain responsible for the upstream data and model terms.
 ```
 
 The substituted file must recompute `channel` after changing labels while
-holding every other preprocessing input, geometry, correspondence, and random
-state fixed. The command prints movement rates and can write a machine-readable
-report with `--json output.json`.
+holding preprocessing inputs, geometry, correspondence, and random state fixed.
+The command prints movement rates and can write a machine-readable report with
+`--json output.json`.
 
-## Reproducibility boundary
+## Validation status and limits
 
-Offline tests establish software behavior on synthetic cases. The exact finite
-identification example is fully replayable. Aggregate empirical records are
-published with protocols and input hashes, but raw arrays that could not be
-confidently redistributed are not public. The self-fetching scripts cover two
-larger quantities; they do not reproduce every training run in the paper.
+Freshly verified on 2 October 2026:
+
+- manifest integrity;
+- all 27 offline provenance assertions;
+- all 9 offline cache-path assertions;
+- exact finite identification example;
+- Python compilation and clean-clone execution.
+
+These checks establish released software behavior, not full empirical
+regeneration. The optional large replays were not completed on the release
+host. Aggregate empirical records are accompanied by protocols and input
+hashes, but this repository does not reproduce every training run in the paper.
+See `REPRODUCTION_LIMITS.md` for the exact boundary.
+
+## Citation
+
+Author-bearing citation metadata has not yet been added to this public artifact.
+Until a public workshop record is available, cite the linked version by its
+title and version: *What Does a Protein Surface Add? Ablations Cannot Tell
+You*, ICBINB: Failure Modes of AI in Biology workshop submission at NeurIPS
+2026, submitted 29 August 2026.
 
 ## Licence
 
 Project-authored code and documentation are BSD-3-Clause; see `LICENSE`.
-Third-party materials are not relicensed by this repository.
+The paper and third-party materials are not relicensed by that code licence.

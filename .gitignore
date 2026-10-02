@@ -23,3 +23,5 @@ outputs/
 *.fls
 *.out
 *.pdf
+!paper/
+!paper/*.pdf

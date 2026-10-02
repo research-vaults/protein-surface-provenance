@@ -6,6 +6,7 @@ research archive.
 ## Fully replayable without network access
 
 - the 27 diagnostic regression assertions;
+- the 9 cache-path precedence assertions;
 - the synthetic intervention examples; and
 - the exact three-state identification example.
 
@@ -17,6 +18,24 @@ research archive.
 The scripts pin or hash-check their public inputs. Their successful execution
 still depends on upstream availability, platform-compatible dependencies, and
 the upstream terms of use.
+
+The shared cache root is `reproduction/.cache/` unless
+`SURFACE_PROVENANCE_CACHE` is set. For channel capacity, `--data-dir` overrides
+the resulting `data/` directory. For the frozen contrast, `--cache-dir`
+overrides the cache root. Both scripts support `--show-paths`, which resolves
+this precedence without creating directories or starting downloads.
+
+The public CATH files occupy about 494 MiB. The frozen contrast additionally
+uses a pinned ProteinMPNN checkout and weights of roughly 180 MiB. Allow at
+least 1 GiB for the cache plus separate space for the Python environment. The
+full frozen CPU workflow was previously estimated at 15--25 minutes; runtime
+is hardware-dependent, and peak memory was not benchmarked for this release.
+
+These two large replays were **not run to completion while preparing the public
+release**. An attempted CATH download stopped when the release host ran out of
+disk space. The incomplete ignored file was removed and never committed. The
+offline tests and exact finite example passed; those results must not be read
+as a full empirical replay.
 
 ## Aggregate records only
 
